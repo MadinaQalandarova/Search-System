@@ -3,7 +3,7 @@
 // ==========================================
 const places = [
   {
-    title: "Zaamin Mountains",
+    title: "Zamin Mountains",
     image:
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
   },
@@ -23,7 +23,7 @@ const places = [
       "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    title: "Nuratau Mountains",
+    title: "Nurata Mountains",
     image:
       "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1200&q=80",
   },
