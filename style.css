@@ -23,16 +23,23 @@ body {
   height: 550px;
 }
 
-/* Karta stili */
+/* Karta stili - Standart holatda OQ-QORA (Black & White) */
 .card {
   position: relative;
-  flex: 1; /* Standart holatdagi eni */
+  flex: 1;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   background-size: cover;
   background-position: center;
+
+  /* Rang va kenglik silliq o'zgarishi uchun transition */
+  transition:
+    flex 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+    filter 0.6s ease;
+
+  /* Faol bo'lmagan kartalarni to'liq oq-qora qilish */
+  filter: grayscale(100%) brightness(0.7);
 }
 
 /* Qorong'u qatlam (Overlay) */
@@ -49,13 +56,15 @@ body {
   transition: opacity 0.5s ease;
 }
 
-/* Faol (kengaygan) karta */
+/* Faol (kengaygan) karta - O'Z RANGIGA QAYTADI */
 .card.active {
-  flex: 5; /* Kengaygan holatdagi eni */
+  flex: 5;
+  /* Rangni asl holiga qaytarish */
+  filter: grayscale(0%) brightness(1);
 }
 
 .card.active::before {
-  opacity: 0.35;
+  opacity: 0.25; /* Rasm yanada yorqinroq va tiniq ko'rinishi uchun */
 }
 
 /* Karta ichidagi matn va chiziq */
@@ -84,7 +93,7 @@ body {
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  opacity: 0.6;
+  opacity: 0.5;
   transform: translateY(2px);
   transition:
     opacity 0.4s ease,
