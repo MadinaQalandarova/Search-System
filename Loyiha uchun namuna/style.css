@@ -1,0 +1,156 @@
+:root {
+  --primary-glow: #64bec8;
+  --border-color: rgba(75, 204, 255, 0.45);
+  --bg-dark: #080d14;
+  --card-bg: rgba(15, 25, 35, 0.65);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.carousel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 1200px;
+  perspective: 1000px; /* 3D samara uchun */
+}
+
+/* 3D Carousel Field */
+.carousel {
+  position: relative;
+  width: 300px;
+  height: 380px;
+  transform-style: preserve-3d;
+}
+
+/* Card Styling */
+.card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow:
+    inset 0 0 20px -6px var(--primary-glow),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.6s ease,
+    filter 0.6s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.card-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 10px rgba(100, 190, 200, 0.5));
+}
+
+.card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.card p {
+  font-size: 14px;
+  color: #a0aec0;
+  line-height: 1.5;
+}
+
+/* Active Glow Card State */
+.card.active {
+  box-shadow:
+    inset 0 0 25px -4px var(--primary-glow),
+    0 0 35px rgba(100, 190, 200, 0.3);
+  border-color: #8be5ff;
+}
+
+/* Navigation Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 10;
+}
+
+.nav-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(20, 35, 50, 0.6);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(30px);
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0 0 15px -4px var(--primary-glow);
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(100, 190, 200, 0.2);
+  transform: scale(1.1);
+  box-shadow:
+    inset 0 0 20px -2px var(--primary-glow),
+    0 0 15px var(--primary-glow);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* Navigation Dots */
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.dot.active {
+  width: 12px;
+  height: 12px;
+  background-color: var(--primary-glow);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
