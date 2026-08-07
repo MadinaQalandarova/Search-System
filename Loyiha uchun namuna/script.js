@@ -7,25 +7,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const dotsContainer = document.getElementById("dots");
 
   const totalCards = cards.length;
-  const angleStep = 360 / totalCards; // 8 ta kartaga 45 gradusdan
-  const radius = 340; // Doira radiusi (ixchamlashtirildi)
+  const angleStep = 360 / totalCards; // 8 ta kartaga 45°
 
-  let currentIndex = 2; // Boshlanishdagi karta (Uzbekistan App)
+  // Ekran o'lchamiga qarab doira radiusini hisoblash (Responsivlik uchun)
+  function getRadius() {
+    return window.innerWidth < 480 ? 220 : 320;
+  }
+
+  let radius = getRadius();
+  let currentIndex = 2; // Uzbekistan App kartasi
   let rotationAngle = -currentIndex * angleStep;
 
-  // Drag (Surish) o'zgaruvchilari
+  // Touch va Drag o'zgaruvchilari
   let isDragging = false;
   let startX = 0;
-  let currentDragAngle = 0;
   let dragOffset = 0;
 
-  // 1. Kartalarni 3D halqaga joylash
-  cards.forEach((card, index) => {
-    const cardAngle = index * angleStep;
-    card.style.transform = `rotateY(${cardAngle}deg) translateZ(${radius}px)`;
-  });
+  // 1. Kartalarni doira bo'yicha 3D joylashtirish
+  function positionCards() {
+    radius = getRadius();
+    cards.forEach((card, index) => {
+      const cardAngle = index * angleStep;
+      card.style.transform = `rotateY(${cardAngle}deg) translateZ(${radius}px)`;
+    });
+  }
 
-  // 2. Indikatorlarni yaratish
+  // 2. Dots yaratish
   cards.forEach((_, index) => {
     const dot = document.createElement("div");
     dot.classList.add("dot");
@@ -36,7 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const dots = document.querySelectorAll(".dot");
 
-  // 3. Karuselni yangilash
+  // 3. Kartalarning o'zi 360° aylanadigan animatsiyani tetiklash
+  function triggerSelfSpin() {
+    cards.forEach((card) => {
+      card.classList.add("spin");
+      setTimeout(() => {
+        card.classList.remove("spin");
+      }, 800); // Animatsiya davomiyligi
+    });
+  }
+
+  // 4. Karusel holatini yangilash
   function updateCarousel() {
     ring.style.transform = `rotateY(${rotationAngle}deg)`;
 
@@ -55,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.style.filter = "blur(0px)";
       } else {
         card.classList.remove("active");
-        card.style.opacity = Math.max(0.15, 1 - diff * 0.3);
+        card.style.opacity = Math.max(0.15, 1 - diff * 0.35);
         card.style.filter = `blur(${diff * 2}px)`;
       }
     });
@@ -63,6 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
     dots.forEach((dot, index) => {
       dot.classList.toggle("active", index === normalizedCurrent);
     });
+
+    // Har bir karta almashganda ularning o'zini 360° ga aylantiramiz
+    triggerSelfSpin();
   }
 
   function rotateTo(targetIndex) {
@@ -83,8 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCarousel();
   }
 
-  // --- TOUCH & MOUSE DRAG EVENTLARI ---
-
+  // Touch va Mouse Drag
   function startDrag(e) {
     isDragging = true;
     ring.classList.add("dragging");
@@ -98,9 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? e.touches[0].clientX
       : e.clientX;
     const deltaX = currentX - startX;
-
-    // Surish masofasini gradusga o'tkazish
-    dragOffset = (deltaX / 300) * angleStep;
+    dragOffset = (deltaX / 250) * angleStep;
     ring.style.transform = `rotateY(${rotationAngle + dragOffset}deg)`;
   }
 
@@ -109,10 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
     isDragging = false;
     ring.classList.remove("dragging");
 
-    // Surilgan tomonga qarab eng yaqin kartaga moslash
-    if (dragOffset < -10) {
+    if (dragOffset < -8) {
       currentIndex++;
-    } else if (dragOffset > 10) {
+    } else if (dragOffset > 8) {
       currentIndex--;
     }
 
@@ -120,24 +136,21 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCarousel();
   }
 
-  // Mouse Hodisalari
+  // Event Listeners
   stage.addEventListener("mousedown", startDrag);
   window.addEventListener("mousemove", moveDrag);
   window.addEventListener("mouseup", endDrag);
 
-  // Touch (Telefon/Planshet) Hodisalari
   stage.addEventListener("touchstart", startDrag, { passive: true });
   window.addEventListener("touchmove", moveDrag, { passive: true });
   window.addEventListener("touchend", endDrag);
 
-  // Navigatsiya tugmalari
   nextBtn.addEventListener("click", nextSlide);
   prevBtn.addEventListener("click", prevSlide);
 
-  // Kartani bosganda o'sha kartaga burilish
   cards.forEach((card, index) => {
     card.addEventListener("click", () => {
-      if (Math.abs(dragOffset) > 5) return; // Drag qilganda click ishlashini oldini olish
+      if (Math.abs(dragOffset) > 5) return;
       const normalizedCurrent =
         ((currentIndex % totalCards) + totalCards) % totalCards;
       let diff = index - normalizedCurrent;
@@ -157,6 +170,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "ArrowLeft") prevSlide();
   });
 
-  // Boshlang'ich holat
+  // Ekran o'lchami o'zgarganda qayta hisoblash
+  window.addEventListener("resize", () => {
+    positionCards();
+    updateCarousel();
+  });
+
+  // Boshlang'ich joylashtirish
+  positionCards();
   updateCarousel();
 });

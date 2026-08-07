@@ -2,7 +2,7 @@
   --primary-glow: #64bec8;
   --border-color: rgba(75, 204, 255, 0.45);
   --bg-dark: #04080e;
-  --card-bg: rgba(12, 22, 34, 0.7);
+  --card-bg: rgba(12, 22, 34, 0.75);
 }
 
 * {
@@ -14,11 +14,14 @@
     system-ui,
     -apple-system,
     sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background-color: var(--bg-dark);
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh; /* Mobil ekranlar uchun moslashuvchan balandlik */
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,22 +29,21 @@ body {
   color: #ffffff;
 }
 
-/* Container & Layout */
+/* Asosiy Container */
 .app-promo-container {
   width: 100%;
-  max-width: 1200px;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 30px; /* Masofa tartibga solindi */
+  padding: 20px 10px;
 }
 
-/* 3D Carousel Stage - O'lchamlar ixchamlashtirildi */
+/* 3D Stage - Responsiv o'lchamlar */
 .carousel-stage {
-  width: 260px;
-  height: 330px;
+  width: clamp(200px, 60vw, 280px);
+  height: clamp(280px, 50vh, 360px);
   perspective: 1000px;
   position: relative;
   cursor: grab;
@@ -51,125 +53,128 @@ body {
   cursor: grabbing;
 }
 
-/* Cylindrical 3D Ring */
+/* 3D Ring */
 .carousel-ring {
   width: 100%;
   height: 100%;
   position: absolute;
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.25, 1, 0.3, 1);
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.3, 1);
 }
 
-/* Drag paytida silliq bo'lishi uchun transiton o'chiriladi */
 .carousel-ring.dragging {
   transition: none !important;
 }
 
-/* Karta dizayni - Kichikroq va mutanosib */
+/* Karta Tashqi Korpusi */
 .card {
   position: absolute;
-  width: 260px;
-  height: 330px;
+  width: 100%;
+  height: 100%;
   left: 0;
   top: 0;
+  perspective: 1000px;
+  transition:
+    opacity 0.6s ease,
+    filter 0.6s ease;
+  user-select: none;
+}
+
+/* Karta Ichki qismi (360° Aylanish animatsiyasi uchun) */
+.card-inner {
+  width: 100%;
+  height: 100%;
   background: var(--card-bg);
   border: 1.5px solid var(--border-color);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-radius: 22px;
-  padding: 25px 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: clamp(15px, 4vw, 25px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  user-select: none;
   box-shadow:
     inset 0 0 15px -5px var(--primary-glow),
-    0 15px 30px rgba(0, 0, 0, 0.7);
+    0 10px 25px rgba(0, 0, 0, 0.7);
+  transform-style: preserve-3d;
   transition:
-    opacity 0.5s ease,
-    filter 0.5s ease,
+    transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 0.4s ease,
     box-shadow 0.4s ease;
-  backface-visibility: hidden;
+}
+
+/* Karta har safar almashganda o'z o'qida 360° aylanadi */
+.card.spin .card-inner {
+  transform: rotateY(360deg);
 }
 
 .card-icon {
-  font-size: 52px;
-  margin-bottom: 16px;
-  filter: drop-shadow(0 0 12px rgba(100, 190, 200, 0.6));
+  font-size: clamp(38px, 8vw, 56px);
+  margin-bottom: clamp(10px, 2vh, 18px);
+  filter: drop-shadow(0 0 10px rgba(100, 190, 200, 0.6));
 }
 
 .card h3 {
-  font-size: 20px;
+  font-size: clamp(16px, 4vw, 22px);
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: #ffffff;
-  letter-spacing: 0.5px;
 }
 
 .card p {
-  font-size: 13px;
+  font-size: clamp(11px, 3vw, 13px);
   color: #a0aec0;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-/* Active Highlight Card */
-.card.active {
+/* Active Karta Holati */
+.card.active .card-inner {
   border-color: #8be5ff;
   box-shadow:
     inset 0 0 25px -2px var(--primary-glow),
     0 0 25px rgba(100, 190, 200, 0.4);
 }
 
-/* Navigatsiya elementlari */
+/* Controls va Navigatsiya */
 .controls {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: clamp(10px, 4vw, 20px);
   z-index: 20;
-  margin-top: 10px; /* Yopishib qolmasligi uchun */
 }
 
 .nav-btn {
-  width: 44px;
-  height: 44px;
+  width: clamp(38px, 10vw, 46px);
+  height: clamp(38px, 10vw, 46px);
   border-radius: 50%;
-  background: rgba(15, 30, 45, 0.7);
+  background: rgba(15, 30, 45, 0.75);
   border: 1px solid var(--border-color);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
   color: #ffffff;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: inset 0 0 12px -3px var(--primary-glow);
+  box-shadow: inset 0 0 10px -2px var(--primary-glow);
   transition: all 0.3s ease;
 }
 
-.nav-btn:hover {
-  background: rgba(100, 190, 200, 0.25);
-  transform: scale(1.1);
-  box-shadow:
-    inset 0 0 18px 0px var(--primary-glow),
-    0 0 15px var(--primary-glow);
-}
-
 .nav-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.9);
 }
 
 .dots {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(6px, 2vw, 10px);
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: clamp(6px, 2vw, 8px);
+  height: clamp(6px, 2vw, 8px);
   background-color: rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   cursor: pointer;
@@ -177,8 +182,18 @@ body {
 }
 
 .dot.active {
-  width: 12px;
-  height: 12px;
+  width: clamp(10px, 3vw, 12px);
+  height: clamp(10px, 3vw, 12px);
   background-color: var(--primary-glow);
   box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* Ekran kengligi kichik telefonlar uchun qo'shimcha moslashuv */
+@media (max-height: 600px) {
+  .app-promo-container {
+    gap: 10px;
+  }
+  .carousel-stage {
+    height: 250px;
+  }
 }
