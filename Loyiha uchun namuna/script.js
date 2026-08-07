@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const stage = document.querySelector(".carousel-stage");
+  const stage = document.getElementById("carouselStage");
   const ring = document.getElementById("carouselRing");
   const cards = document.querySelectorAll(".card");
   const prevBtn = document.getElementById("prevBtn");
@@ -9,21 +9,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalCards = cards.length;
   const angleStep = 360 / totalCards; // 8 ta kartaga 45°
 
-  // Ekran o'lchamiga qarab doira radiusini hisoblash (Responsivlik uchun)
+  // Kichraytirilgan kartalar uchun optimal radius
   function getRadius() {
-    return window.innerWidth < 480 ? 220 : 320;
+    return window.innerWidth < 480 ? 300 : 380;
   }
 
   let radius = getRadius();
-  let currentIndex = 2; // Uzbekistan App kartasi
+  let currentIndex = 2; // Boshlang'ich markaziy karta
   let rotationAngle = -currentIndex * angleStep;
 
-  // Touch va Drag o'zgaruvchilari
+  // Drag variables
   let isDragging = false;
   let startX = 0;
   let dragOffset = 0;
 
-  // 1. Kartalarni doira bo'yicha 3D joylashtirish
+  // 1. Kartalarni doira bo'ylab 3D xavfsiz masofada joylashtirish
   function positionCards() {
     radius = getRadius();
     cards.forEach((card, index) => {
@@ -32,29 +32,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. Dots yaratish
+  // 2. Dots
   cards.forEach((_, index) => {
     const dot = document.createElement("div");
     dot.classList.add("dot");
     if (index === currentIndex) dot.classList.add("active");
-    dot.addEventListener("click", () => rotateTo(index));
+    dot.addEventListener("click", () => goToIndex(index));
     dotsContainer.appendChild(dot);
   });
 
   const dots = document.querySelectorAll(".dot");
 
-  // 3. Kartalarning o'zi 360° aylanadigan animatsiyani tetiklash
-  function triggerSelfSpin() {
+  // 3. FAQAT oxirgi <-> birinchi o'tishida 360 Spin ishlatuvchi funksiya
+  function triggerBoundary360Spin() {
     cards.forEach((card) => {
-      card.classList.add("spin");
+      card.classList.add("spin-360");
       setTimeout(() => {
-        card.classList.remove("spin");
-      }, 800); // Animatsiya davomiyligi
+        card.classList.remove("spin-360");
+      }, 850);
     });
   }
 
-  // 4. Karusel holatini yangilash
-  function updateCarousel() {
+  // 4. Karuselni yangilash
+  function updateCarousel(isBoundaryJump = false) {
     ring.style.transform = `rotateY(${rotationAngle}deg)`;
 
     const normalizedCurrent =
@@ -72,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
         card.style.filter = "blur(0px)";
       } else {
         card.classList.remove("active");
-        card.style.opacity = Math.max(0.15, 1 - diff * 0.35);
-        card.style.filter = `blur(${diff * 2}px)`;
+        card.style.opacity = Math.max(0.2, 1 - diff * 0.3);
+        card.style.filter = `blur(${diff * 1.8}px)`;
       }
     });
 
@@ -81,29 +81,55 @@ document.addEventListener("DOMContentLoaded", () => {
       dot.classList.toggle("active", index === normalizedCurrent);
     });
 
-    // Har bir karta almashganda ularning o'zini 360° ga aylantiramiz
-    triggerSelfSpin();
-  }
-
-  function rotateTo(targetIndex) {
-    currentIndex = targetIndex;
-    rotationAngle = -currentIndex * angleStep;
-    updateCarousel();
+    if (isBoundaryJump) {
+      triggerBoundary360Spin();
+    }
   }
 
   function nextSlide() {
+    const oldNormalized =
+      ((currentIndex % totalCards) + totalCards) % totalCards;
     currentIndex++;
+    const newNormalized =
+      ((currentIndex % totalCards) + totalCards) % totalCards;
+
+    const isBoundary = oldNormalized === totalCards - 1 && newNormalized === 0;
+
     rotationAngle -= angleStep;
-    updateCarousel();
+    updateCarousel(isBoundary);
   }
 
   function prevSlide() {
+    const oldNormalized =
+      ((currentIndex % totalCards) + totalCards) % totalCards;
     currentIndex--;
+    const newNormalized =
+      ((currentIndex % totalCards) + totalCards) % totalCards;
+
+    const isBoundary = oldNormalized === 0 && newNormalized === totalCards - 1;
+
     rotationAngle += angleStep;
-    updateCarousel();
+    updateCarousel(isBoundary);
   }
 
-  // Touch va Mouse Drag
+  function goToIndex(targetIndex) {
+    const oldNormalized =
+      ((currentIndex % totalCards) + totalCards) % totalCards;
+
+    const isBoundary =
+      (oldNormalized === totalCards - 1 && targetIndex === 0) ||
+      (oldNormalized === 0 && targetIndex === totalCards - 1);
+
+    let diff = targetIndex - oldNormalized;
+    if (diff > totalCards / 2) diff -= totalCards;
+    if (diff < -totalCards / 2) diff += totalCards;
+
+    currentIndex += diff;
+    rotationAngle = -currentIndex * angleStep;
+    updateCarousel(isBoundary);
+  }
+
+  // TOUCH & DRAG
   function startDrag(e) {
     isDragging = true;
     ring.classList.add("dragging");
@@ -117,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? e.touches[0].clientX
       : e.clientX;
     const deltaX = currentX - startX;
-    dragOffset = (deltaX / 250) * angleStep;
+    dragOffset = (deltaX / 260) * angleStep;
     ring.style.transform = `rotateY(${rotationAngle + dragOffset}deg)`;
   }
 
@@ -127,13 +153,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ring.classList.remove("dragging");
 
     if (dragOffset < -8) {
-      currentIndex++;
+      nextSlide();
     } else if (dragOffset > 8) {
-      currentIndex--;
+      prevSlide();
+    } else {
+      updateCarousel(false);
     }
-
-    rotationAngle = -currentIndex * angleStep;
-    updateCarousel();
   }
 
   // Event Listeners
@@ -151,32 +176,23 @@ document.addEventListener("DOMContentLoaded", () => {
   cards.forEach((card, index) => {
     card.addEventListener("click", () => {
       if (Math.abs(dragOffset) > 5) return;
-      const normalizedCurrent =
-        ((currentIndex % totalCards) + totalCards) % totalCards;
-      let diff = index - normalizedCurrent;
-
-      if (diff > totalCards / 2) diff -= totalCards;
-      if (diff < -totalCards / 2) diff += totalCards;
-
-      currentIndex += diff;
-      rotationAngle = -currentIndex * angleStep;
-      updateCarousel();
+      goToIndex(index);
     });
   });
 
-  // Klaviatura
+  // Keyboard
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") nextSlide();
     if (e.key === "ArrowLeft") prevSlide();
   });
 
-  // Ekran o'lchami o'zgarganda qayta hisoblash
+  // Resize
   window.addEventListener("resize", () => {
     positionCards();
-    updateCarousel();
+    updateCarousel(false);
   });
 
-  // Boshlang'ich joylashtirish
+  // Init
   positionCards();
-  updateCarousel();
+  updateCarousel(false);
 });

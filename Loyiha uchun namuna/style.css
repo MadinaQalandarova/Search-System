@@ -2,7 +2,7 @@
   --primary-glow: #64bec8;
   --border-color: rgba(75, 204, 255, 0.45);
   --bg-dark: #04080e;
-  --card-bg: rgba(12, 22, 34, 0.75);
+  --card-bg: rgba(12, 22, 34, 0.85);
 }
 
 * {
@@ -20,7 +20,7 @@
 body {
   background-color: var(--bg-dark);
   height: 100vh;
-  height: 100dvh; /* Mobil ekranlar uchun moslashuvchan balandlik */
+  height: 100dvh;
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -29,22 +29,22 @@ body {
   color: #ffffff;
 }
 
-/* Asosiy Container */
 .app-promo-container {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center; /* Kontent markazda ixcham turadi */
   align-items: center;
+  gap: clamp(20px, 4vh, 40px); /* Karta va tugmalar orasidagi xavfsiz masofa */
   padding: 20px 10px;
 }
 
-/* 3D Stage - Responsiv o'lchamlar */
+/* 3D Stage - Karta o'lchamlari ancha ixcham va kichiklashtirildi */
 .carousel-stage {
-  width: clamp(200px, 60vw, 280px);
-  height: clamp(280px, 50vh, 360px);
-  perspective: 1000px;
+  width: clamp(190px, 18vw, 230px);
+  height: clamp(260px, 40vh, 310px);
+  perspective: 1100px;
   position: relative;
   cursor: grab;
 }
@@ -53,7 +53,6 @@ body {
   cursor: grabbing;
 }
 
-/* 3D Ring */
 .carousel-ring {
   width: 100%;
   height: 100%;
@@ -66,7 +65,7 @@ body {
   transition: none !important;
 }
 
-/* Karta Tashqi Korpusi */
+/* Card Container */
 .card {
   position: absolute;
   width: 100%;
@@ -80,7 +79,7 @@ body {
   user-select: none;
 }
 
-/* Karta Ichki qismi (360° Aylanish animatsiyasi uchun) */
+/* Card Inner Frame */
 .card-inner {
   width: 100%;
   height: 100%;
@@ -89,7 +88,7 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 20px;
-  padding: clamp(15px, 4vw, 25px);
+  padding: clamp(14px, 2.5vw, 20px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -97,63 +96,73 @@ body {
   text-align: center;
   box-shadow:
     inset 0 0 15px -5px var(--primary-glow),
-    0 10px 25px rgba(0, 0, 0, 0.7);
+    0 12px 30px rgba(0, 0, 0, 0.7);
   transform-style: preserve-3d;
   transition:
-    transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 0.4s ease,
-    box-shadow 0.4s ease;
+    box-shadow 0.4s ease,
+    transform 0.8s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
-/* Karta har safar almashganda o'z o'qida 360° aylanadi */
-.card.spin .card-inner {
-  transform: rotateY(360deg);
+/* FAQAT boundary (0 -> N yoki N -> 0) o'tishlarida 360 Spin effekti */
+.card.spin-360 .card-inner {
+  animation: fullSpin 0.85s cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
+}
+
+@keyframes fullSpin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
 }
 
 .card-icon {
-  font-size: clamp(38px, 8vw, 56px);
-  margin-bottom: clamp(10px, 2vh, 18px);
-  filter: drop-shadow(0 0 10px rgba(100, 190, 200, 0.6));
+  font-size: clamp(34px, 5vw, 44px);
+  margin-bottom: clamp(10px, 1.5vh, 14px);
+  filter: drop-shadow(0 0 8px rgba(100, 190, 200, 0.6));
 }
 
 .card h3 {
-  font-size: clamp(16px, 4vw, 22px);
+  font-size: clamp(15px, 2.5vw, 18px);
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: #ffffff;
 }
 
 .card p {
-  font-size: clamp(11px, 3vw, 13px);
+  font-size: clamp(10px, 1.8vw, 12px);
   color: #a0aec0;
   line-height: 1.4;
 }
 
-/* Active Karta Holati */
+/* Active Highlight */
 .card.active .card-inner {
   border-color: #8be5ff;
   box-shadow:
     inset 0 0 25px -2px var(--primary-glow),
-    0 0 25px rgba(100, 190, 200, 0.4);
+    0 0 25px rgba(100, 190, 200, 0.45);
 }
 
-/* Controls va Navigatsiya */
+/* Controls va Dots - Mustaqil va Pastda chiroyli turishi uchun */
 .controls {
   display: flex;
   align-items: center;
-  gap: clamp(10px, 4vw, 20px);
+  gap: clamp(12px, 3vw, 20px);
   z-index: 20;
+  margin-top: 10px; /* Kartaga tegmasligi uchun masofa */
 }
 
 .nav-btn {
-  width: clamp(38px, 10vw, 46px);
-  height: clamp(38px, 10vw, 46px);
+  width: clamp(36px, 6vw, 42px);
+  height: clamp(36px, 6vw, 42px);
   border-radius: 50%;
-  background: rgba(15, 30, 45, 0.75);
+  background: rgba(15, 30, 45, 0.85);
   border: 1px solid var(--border-color);
   backdrop-filter: blur(15px);
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -162,19 +171,24 @@ body {
   transition: all 0.3s ease;
 }
 
+.nav-btn:hover {
+  background: rgba(100, 190, 200, 0.25);
+  transform: scale(1.08);
+}
+
 .nav-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.92);
 }
 
 .dots {
   display: flex;
   align-items: center;
-  gap: clamp(6px, 2vw, 10px);
+  gap: clamp(6px, 1.5vw, 8px);
 }
 
 .dot {
-  width: clamp(6px, 2vw, 8px);
-  height: clamp(6px, 2vw, 8px);
+  width: clamp(6px, 1.5vw, 8px);
+  height: clamp(6px, 1.5vw, 8px);
   background-color: rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   cursor: pointer;
@@ -182,18 +196,15 @@ body {
 }
 
 .dot.active {
-  width: clamp(10px, 3vw, 12px);
-  height: clamp(10px, 3vw, 12px);
+  width: clamp(10px, 2vw, 12px);
+  height: clamp(10px, 2vw, 12px);
   background-color: var(--primary-glow);
   box-shadow: 0 0 10px var(--primary-glow);
 }
 
-/* Ekran kengligi kichik telefonlar uchun qo'shimcha moslashuv */
-@media (max-height: 600px) {
-  .app-promo-container {
-    gap: 10px;
-  }
+@media (max-width: 480px) {
   .carousel-stage {
-    height: 250px;
+    width: 200px;
+    height: 270px;
   }
 }
