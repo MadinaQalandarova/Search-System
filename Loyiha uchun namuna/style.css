@@ -121,7 +121,7 @@ body {
 .card-icon {
   font-size: clamp(34px, 5vw, 44px);
   margin-bottom: clamp(10px, 1.5vh, 14px);
-  filter: drop-shadow(0 0 8px rgba(100, 190, 200, 0.6));
+  filter: drop-shadow(0 0 8px rgba(115, 200, 209, 0.6));
 }
 
 .card h3 {
@@ -151,7 +151,7 @@ body {
   align-items: center;
   gap: clamp(12px, 3vw, 20px);
   z-index: 20;
-  margin-top: 50px; /* Kartaga tegmasligi uchun masofa */
+  margin-top: 70px; /* Kartaga tegmasligi uchun masofa */
 }
 
 .nav-btn {
