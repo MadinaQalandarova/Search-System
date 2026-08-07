@@ -7,15 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const dotsContainer = document.getElementById("dots");
 
   const totalCards = cards.length;
-  const angleStep = 360 / totalCards; // 8 ta kartaga 45°
+  const angleStep = 360 / totalCards; // 8 ta kartaga 45°, 360ni 8 ga bo'lganda 45° bo'ladi
 
-  // Kichraytirilgan kartalar uchun optimal radius
+  // Kichraytirilgan cardlar uchun optimal radius
   function getRadius() {
     return window.innerWidth < 480 ? 300 : 380;
   }
 
   let radius = getRadius();
-  let currentIndex = 2; // Boshlang'ich markaziy karta
+  let currentIndex = 2; // Boshlang'ich markaziy card
   let rotationAngle = -currentIndex * angleStep;
 
   // Drag variables
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let startX = 0;
   let dragOffset = 0;
 
-  // 1. Kartalarni doira bo'ylab 3D xavfsiz masofada joylashtirish
+  // 1. Cardlarni doira bo'ylab 3D xavfsiz masofada joylashtirish
   function positionCards() {
     radius = getRadius();
     cards.forEach((card, index) => {
