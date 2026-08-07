@@ -151,7 +151,7 @@ body {
   align-items: center;
   gap: clamp(12px, 3vw, 20px);
   z-index: 20;
-  margin-top: 10px; /* Kartaga tegmasligi uchun masofa */
+  margin-top: 50px; /* Kartaga tegmasligi uchun masofa */
 }
 
 .nav-btn {
