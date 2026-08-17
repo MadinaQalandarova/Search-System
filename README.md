@@ -14,7 +14,7 @@ CSS va HTML yordamida yaratilgan zamonaviy, animatsiyali va interaktiv qidiruv p
 * **HTML5**
 * **CSS3** (Flexbox, CSS Animations, Pseudoclasses)
 * **Font Awesome v6** (Ikonkalar uchun)
-
+* **JavaScript**
 ## 🚀 Ishga tushirish
 
 1. Repozitoriyani yuklab oling:
